@@ -25,6 +25,10 @@ import org.openqa.selenium.WebElement;
 //import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import Std.StdOut;
+import WordCompletion.TrieST;
+import WordCompletion.WordCompletion;
+
 public class Project {
 	private static Scanner myObj;
 	private static Scanner sc;
@@ -181,31 +185,8 @@ public class Project {
 			sortedByValueDesc.forEach((key, value) -> System.out.println("  " + value + " -- " + key));
 		}
 
-		System.out.println("\n\n======================== Word Completion ========================\n\n");
-		String[] fileContent = null;
-		TrieST<Integer> trie = new TrieST<Integer>();
-		File folder = new File("src/resc/Web Pages/");
-		for (File fileEntry : folder.listFiles()) {
-			fileContent = readFile(folder.getAbsolutePath() + "/" + fileEntry.getName());
-			if (fileContent != null)
-				for (int i = 0; i < fileContent.length; i++)
-					if (IsNumAlpha(fileContent[i]))
-						trie.put(fileContent[i].toLowerCase(), i);
-		}
-
-		// Just for testing purposes
-		writeFile("TrieDictionary", trie.keys().toString().replace(" ", "\n"));
-
-		System.out.println("Enter a word:");
-		String word = sc.nextLine();
-		if (trie.contains(word)) {
-			StdOut.println("");
-		} else {
-			StdOut.println("Related Words");
-			for (String s : trie.keysWithPrefix(word))
-				StdOut.println(s);
-		}
-
+		System.out.println("Word Completion:");
+		WordCompletion.run();
 	}
 
 	private static void crawlUrls(int level, List<String> urls, ArrayList<String> visited) throws Exception {
