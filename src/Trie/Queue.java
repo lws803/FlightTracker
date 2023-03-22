@@ -1,4 +1,4 @@
-package WordCompletion;
+package Trie;
 
 /*************************************************************************
  *  Compilation:  javac Queue.java

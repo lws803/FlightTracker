@@ -1,4 +1,4 @@
-package WordCompletion;
+package Trie;
 
 //import graphs.In;
 

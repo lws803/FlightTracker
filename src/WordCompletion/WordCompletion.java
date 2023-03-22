@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Scanner;
 
 import Std.StdOut;
+import Trie.TrieST;
 import Common.Utils;
 
 public class WordCompletion {
