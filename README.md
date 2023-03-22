@@ -20,6 +20,7 @@
 - `search_frequency.txt` is just a files of searches
 
 ## TODO
-1. Refactor all our assigned components
+1. Refactor all our assigned components + try to integrate with the project
 2. Create presentations
 3. Deploy to cloud?
+4. Bonus: CLI menu for the different features
