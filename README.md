@@ -2,7 +2,7 @@
 
 ## Files we need to change
 
-- DownloadWebPage.java
+- DownloadWebPage.java (not used anywhere)
 - FrequencyCount.java
 - InvertedIndex.java
 - PageRanking.java
