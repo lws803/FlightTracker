@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
 
-
 public class PageRanking {
 	public static String[] readFile(String filePath) {
 		try {
@@ -16,20 +15,22 @@ public class PageRanking {
 		}
 		return null;
 	}
-		public Hashtable<String, Integer> matchPattern(String pattern) throws IOException{
-			Hashtable<String, Integer> page_rank = new Hashtable<String, Integer>();
-			String[] fileContent = null;
-			File folder = new File("src/resc/Web Pages/");
-			for (File fileEntry : folder.listFiles()) {
-				fileContent = readFile(folder.getAbsolutePath() + "/" + fileEntry.getName());
-				if (fileContent != null)
-					for (int i=0;i<fileContent.length;i++) {
-				Pattern p1 = Pattern.compile(pattern);
-				// Now create matcher object.
-				Matcher m = p1.matcher(fileContent[i]);
-				while (m.find()) 
-					page_rank.merge(fileEntry.getName(), 1, Integer::sum);
-			}}
-			return page_rank;
+
+	public Hashtable<String, Integer> matchPattern(String pattern) throws IOException {
+		Hashtable<String, Integer> pageRank = new Hashtable<String, Integer>();
+		String[] fileContent = null;
+		File folder = new File("src/resc/Web Pages/");
+		for (File fileEntry : folder.listFiles()) {
+			fileContent = readFile(folder.getAbsolutePath() + "/" + fileEntry.getName());
+			if (fileContent != null)
+				for (int i = 0; i < fileContent.length; i++) {
+					Pattern p1 = Pattern.compile(pattern);
+					// Now create matcher object.
+					Matcher m = p1.matcher(fileContent[i]);
+					while (m.find())
+						pageRank.merge(fileEntry.getName(), 1, Integer::sum);
+				}
 		}
+		return pageRank;
+	}
 }
