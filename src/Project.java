@@ -25,8 +25,6 @@ import org.openqa.selenium.WebElement;
 //import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import Std.StdOut;
-import Trie.TrieST;
 import WordCompletion.WordCompletion;
 
 public class Project {
