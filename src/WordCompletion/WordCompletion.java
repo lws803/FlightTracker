@@ -8,13 +8,15 @@ import Trie.TrieST;
 import Common.Utils;
 
 public class WordCompletion {
-  private static Scanner sc;
+  private static Scanner scanner;
 
   public static void main(String[] args) {
 
   }
 
   public static void run() throws Exception {
+    scanner = new Scanner(System.in);
+
     String[] fileContent = null;
     TrieST<Integer> trie = new TrieST<Integer>();
     File folder = new File("src/resc/Web Pages/");
@@ -30,7 +32,7 @@ public class WordCompletion {
     Utils.writeFile("TrieDictionary", trie.keys().toString().replace(" ", "\n"));
 
     System.out.println("Enter a word:");
-    String word = sc.nextLine();
+    String word = scanner.nextLine();
     if (trie.contains(word)) {
       StdOut.println("");
     } else {
