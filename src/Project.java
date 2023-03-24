@@ -24,6 +24,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 //import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import WordCompletion.WordCompletion;
 
@@ -214,8 +215,10 @@ public class Project {
 	}
 
 	private static Document request(String next_link2, ArrayList<String> v) throws Exception {
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--remote-allow-origins=*");
 
-		WebDriver webDriver = new ChromeDriver();
+		WebDriver webDriver = new ChromeDriver(options);
 		webDriver.get(next_link2);
 		String[] ss = null;
 		List<Integer> priceList = new ArrayList<Integer>();
