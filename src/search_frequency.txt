@@ -22,3 +22,5 @@ toronto
 windsor
 toronto
 windsor
+windsor
+toronto

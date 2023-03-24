@@ -6,6 +6,9 @@ import java.util.Map;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import Std.StdOut;
+import Trie.TrieST;
+
 public class InvertedIndex {
 	static TrieST<Map<String, Integer>> wordTrie = new TrieST<>();
 
