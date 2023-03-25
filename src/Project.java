@@ -220,28 +220,36 @@ public class Project {
 
 		WebDriver webDriver = new ChromeDriver(options);
 		webDriver.get(next_link2);
+
 		String[] ss = null;
 		List<Integer> priceList = new ArrayList<Integer>();
-		List<WebElement> elements1 = webDriver.findElements(By.className("FlightsTicket_container__NWJkY"));
-		List<String> flightDetails = new ArrayList<String>();
 
-		for (WebElement element : elements1) {
-			ss = element.getText().split("\n");
-			String str = element.getText();
-			flightDetails.add(str);
-			for (int i = 0; i < ss.length; i++) {
-				// Find price
-				if (ss[i].startsWith("C$")) {
-					priceList.add(Integer.parseInt(ss[i].replaceAll("[^0-9]", "")));
+		int attempts = 0;
+		while (attempts < 2) {
+			List<WebElement> elements1 = webDriver.findElements(By.className("FlightsTicket_container__NWJkY"));
+			List<String> flightDetails = new ArrayList<String>();
+
+			if (elements1.size() > 0) {
+				for (WebElement element : elements1) {
+					ss = element.getText().split("\n");
+					String str = element.getText();
+					flightDetails.add(str);
+					for (int i = 0; i < ss.length; i++) {
+						// Find price
+						if (ss[i].startsWith("C$")) {
+							priceList.add(Integer.parseInt(ss[i].replaceAll("[^0-9]", "")));
+						}
+					}
 				}
+
+				System.out.println("PriceList:" + priceList);
+				int lowestPrice = priceList.indexOf(Collections.min(priceList));
+				System.out.println("Lowest Price Flight:" + flightDetails.get(lowestPrice));
+				break;
 			}
+			attempts++;
 		}
-
-		System.out.println("PriceList:" + priceList);
-		int lowestPrice = priceList.indexOf(Collections.min(priceList));
-		System.out.println("Lowest Price Flight:" + flightDetails.get(lowestPrice));
 		return null;
-
 	}
 
 	public static int minDistance(String firstWrd, String secondWrd) {
