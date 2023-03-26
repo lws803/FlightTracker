@@ -149,8 +149,8 @@ public class Project {
 			InvertedIndex.constructTrie(links, ret);
 		}
 		System.out.println("\n\n======================== Frequency Count ========================\n\n");
-		String[] strArr = FrequencyCount.htmlParse("./src/resc/Web Pages/Cheap domestic flights from Toronto.txt");
-		FrequencyCount.hashTable(strArr);
+		String[] strArr = FrequencyCount.parseHtml("./src/resc/Web Pages/Cheap domestic flights from Toronto.txt");
+		FrequencyCount.printWordFrequency(strArr);
 
 		System.out.println("\n\n======================== Page Ranking ========================\n\n");
 		System.out.print("Enter word: ");
