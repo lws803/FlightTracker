@@ -1,4 +1,3 @@
-package WordCompletion;
 
 import java.io.File;
 import java.util.Scanner;
@@ -31,7 +30,7 @@ public class WordCompletion {
     // Just for testing purposes
     Utils.writeFile("TrieDictionary", trie.keys().toString().replace(" ", "\n"));
 
-    System.out.println("Enter a word:");
+    System.out.print("Enter a word: ");
     String word = scanner.nextLine();
     if (trie.contains(word)) {
       StdOut.println("");
