@@ -27,7 +27,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 public class Project {
-	private static Scanner myObj;
 	private static Scanner sc;
 
 	private static WebDriver webDriver;
@@ -136,28 +135,14 @@ public class Project {
 			System.out.println("Enter number of people travelling");
 			String count = in2.nextLine();
 
-			System.out.println("-----------");
-			System.out.println("Enter class : economy or premium economy");
-			String seatType = in1.nextLine();
-
 			String url = "https://www.skyscanner.ca/transport/flights/" + source + "/" + destination + "/" + departureDate
-					+ "/?adults=" + count
-					+ "&adultsv2=1&cabinclass=economy&children=0&childrenv2=&destinationentityid=27537411&inboundaltsenabled=false&infants=0&originentityid=27536640&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=0";
+					+ "/?adultsv2=" + count
+					+ "&cabinclass=economy&children=0&childrenv2=&destinationentityid=27537411&inboundaltsenabled=false&infants=0&originentityid=27536640&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=0";
 
 			List<String> urls = new ArrayList<String>();
 			urls.add(url);
 			crawlUrls(2, urls, new ArrayList<String>());
-			Document document = Jsoup.connect(url).get();
-			document.text();
 
-			String[] title = document.title().split("\\|");
-			String newTitle = "";
-			for (String s : title) {
-				newTitle = newTitle + "" + s;
-			}
-			BufferedWriter writer = new BufferedWriter(new FileWriter("./src/resc/Web Pages/" + newTitle + ".txt"));
-			writer.write(document.text().toLowerCase());
-			writer.close();
 			// End data collection
 
 			while (true) {
@@ -165,7 +150,7 @@ public class Project {
 				System.out.println("\n*******************************************************************");
 				System.out.println("Choose from the menu and enter the number corresponding to each menu");
 				System.out.println("1 - Inverted Index");
-				System.out.println("2 - Frquency Count");
+				System.out.println("2 - Frequency Count");
 				System.out.println("3 - Page Ranking");
 				System.out.println("4 - Word Completion");
 				System.out.println("5 - Exit");
@@ -177,12 +162,18 @@ public class Project {
 						switch (n) {
 							case 1:
 								System.out.println("\n\n======================== Inverted Index ========================\n\n");
-								List<String> urlNames = new ArrayList<String>();
-								urlNames.add(url);
 
-								for (String links : urlNames) {
-									List<String> ret = InvertedIndex.htmlParse(links);
-									InvertedIndex.constructTrie(links, ret);
+								File folder = new File("src/resc/Web Pages/");
+								File[] listOfFiles = folder.listFiles();
+
+								for (File file : listOfFiles) {
+									if (file.isFile() && file.getName().endsWith(".txt")) {
+										String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
+										if (content != null) {
+											List<String> ret = InvertedIndex.parseContent(content);
+											InvertedIndex.constructTrie(file.getName(), ret);
+										}
+									}
 								}
 								break;
 							case 2:
