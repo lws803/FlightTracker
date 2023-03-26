@@ -26,10 +26,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import WordCompletion.WordCompletion;
-
 public class Project {
-	private static Scanner myObj;
 	private static Scanner sc;
 
 	private static WebDriver webDriver;
@@ -40,144 +37,203 @@ public class Project {
 		webDriver = new ChromeDriver(options);
 
 		// Start data collection
-		File frequencyfile = new File("./src/search_frequency.txt");
-		if (frequencyfile.exists()) {
-			List<String> words = new ArrayList<String>();
-			Scanner myReader = new Scanner(frequencyfile);
-			while (myReader.hasNextLine()) {
-				words.add(myReader.nextLine());
+		System.out.println("**************************");
+		System.out.println("Welcome to Flight Analysis");
+		System.out.println("***************************\n");
+		Scanner in1 = null;
+		Scanner in2 = null;
+
+		try {
+			in1 = new Scanner(System.in);
+			in2 = new Scanner(System.in);
+
+			File frequencyfile = new File("./src/search_frequency.txt");
+			if (frequencyfile.exists()) {
+				List<String> words = new ArrayList<String>();
+				Scanner myReader = new Scanner(frequencyfile);
+				while (myReader.hasNextLine()) {
+					words.add(myReader.nextLine());
+				}
+				myReader.close();
+				Map<String, Integer> wordfreq = new HashMap<>();
+				for (String word : words) {
+					Integer integer = wordfreq.get(word);
+					if (integer == null)
+						wordfreq.put(word, 1);
+					else {
+						wordfreq.put(word, integer + 1);
+					}
+				}
+				System.out.println("*************");
+				System.out.println("*************");
+				System.out.println("MOST SEARCHED DESTINATIONS THIS YEAR:");
+				for (String key : wordfreq.keySet()) {
+					System.out.println(key.toUpperCase() + " " + wordfreq.get(key) + " Times");
+				}
+				System.out.println("*************");
+				System.out.println("*************");
+			} else {
+				frequencyfile.createNewFile();
 			}
-			myReader.close();
-			Map<String, Integer> wordfreq = new HashMap<>();
-			for (String word : words) {
-				Integer integer = wordfreq.get(word);
-				if (integer == null)
-					wordfreq.put(word, 1);
-				else {
-					wordfreq.put(word, integer + 1);
+
+			Map<String, String> citiesCodes = new HashMap<String, String>();
+			citiesCodes.put("windsor", "yqg");
+			citiesCodes.put("toronto", "ytoa");
+			citiesCodes.put("montreal", "yul");
+			citiesCodes.put("vancouver", "yvr");
+
+			System.out.println(
+					"Please choose source and destination from the following: \nWindsor \nToronto \nMontreal \nVancouver ");
+			System.out.println("-----------");
+			System.out.println("Enter name of source");
+			String src = in1.nextLine();
+
+			while (!src.matches("[a-zA-Z_]+")) {
+				System.out.println("Invalid source");
+				System.out.println("Enter name of source");
+				src = in2.nextLine();
+			}
+
+			src = src.toLowerCase();
+			String fileword = src + "\n";
+			String source = citiesCodes.get(src);
+			if (source == null) {
+				source = wordCheck(src);
+				fileword = source + "\n";
+				System.out.println(fileword);
+				source = citiesCodes.get(source);
+			}
+
+			Files.write(Paths.get("src/search_frequency.txt"), fileword.getBytes(), StandardOpenOption.APPEND);
+
+			System.out.println("-----------");
+			System.out.println("Enter name of destination");
+
+			String dest = in2.nextLine();
+			while (!dest.matches("[a-zA-Z_]+")) {
+				System.out.println("Invalid destination");
+				System.out.println("Enter name of destination");
+				dest = in1.nextLine();
+			}
+
+			dest = dest.toLowerCase();
+			fileword = dest + "\n";
+			String destination = citiesCodes.get(dest);
+
+			if (destination == null) {
+				destination = wordCheck(dest);
+				fileword = destination + "\n";
+				destination = citiesCodes.get(destination);
+			}
+			Files.write(Paths.get("src/search_frequency.txt"), fileword.getBytes(), StandardOpenOption.APPEND);
+
+			System.out.println("-----------");
+			System.out.println("Enter date of departure in the format : yymmdd");
+			String departureDate = in1.nextLine();
+
+			System.out.println("-----------");
+			System.out.println("Enter number of people travelling");
+			String count = in2.nextLine();
+
+			String url = "https://www.skyscanner.ca/transport/flights/" + source + "/" + destination + "/" + departureDate
+					+ "/?adultsv2=" + count
+					+ "&cabinclass=economy&children=0&childrenv2=&destinationentityid=27537411&inboundaltsenabled=false&infants=0&originentityid=27536640&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=0";
+
+			List<String> urls = new ArrayList<String>();
+			urls.add(url);
+			crawlUrls(2, urls, new ArrayList<String>());
+
+			// End data collection
+
+			while (true) {
+				boolean exit = false;
+				System.out.println("\n*******************************************************************");
+				System.out.println("Choose from the menu and enter the number corresponding to each menu");
+				System.out.println("1 - Inverted Index");
+				System.out.println("2 - Frequency Count");
+				System.out.println("3 - Page Ranking");
+				System.out.println("4 - Word Completion");
+				System.out.println("5 - Exit");
+				System.out.println("\nEnter your choice Number");
+				int n;
+				try {
+					n = in2.nextInt();
+					if (n > 0 && n < 6) {
+						switch (n) {
+							case 1:
+								System.out.println("\n\n======================== Inverted Index ========================\n\n");
+
+								File folder = new File("src/resc/Web Pages/");
+								File[] listOfFiles = folder.listFiles();
+
+								for (File file : listOfFiles) {
+									if (file.isFile() && file.getName().endsWith(".txt")) {
+										String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
+										if (content != null) {
+											List<String> ret = InvertedIndex.parseContent(content);
+											InvertedIndex.constructTrie(file.getName(), ret);
+										}
+									}
+								}
+								break;
+							case 2:
+								System.out.println("\n\n======================== Frequency Count ========================\n\n");
+								String[] strArr = FrequencyCount
+										.htmlParse("./src/resc/Web Pages/Cheap domestic flights from Toronto.txt");
+								FrequencyCount.hashTable(strArr);
+								break;
+							case 3:
+								System.out.println("\n\n======================== Page Ranking ========================\n\n");
+								System.out.print("Enter word: ");
+								sc = new Scanner(System.in);
+								String input = sc.nextLine();
+								PageRanking pg = new PageRanking();
+
+								Hashtable<String, Integer> pageRank = pg.matchPattern(input);
+
+								if (pageRank.size() == 0)
+									System.out.println("Not found");
+								else {
+									int totalOccurences = 0;
+									for (int occurences : pageRank.values())
+										totalOccurences += occurences;
+									System.out.println("About " + totalOccurences + " matches ");
+									System.out.println("Matches found in " + pageRank.size() + " web pages.\n");
+									System.out.println("Matches\t Top 10 Pages");
+									Map<String, Integer> sortedByValueDesc = pageRank.entrySet()
+											.stream().limit(10)
+											.sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+											.collect(
+													Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+									sortedByValueDesc.forEach((key, value) -> System.out.println("  " + value + " -- " + key));
+								}
+								break;
+							case 4:
+								System.out.println("\n\n======================== Word Completion ========================\n\n");
+								WordCompletion.run();
+								break;
+							default:
+								exit = true;
+						}
+						if (exit)
+							break;
+
+					} else
+						System.out.println("Oops! Entered Wrong number");
+
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
 				}
 			}
-			System.out.println("*************");
-			System.out.println("*************");
-			System.out.println("MOST SEARCHED DESTINATIONS THIS YEAR:");
-			for (String key : wordfreq.keySet()) {
-				System.out.println(key.toUpperCase() + " " + wordfreq.get(key) + " Times");
-			}
-			System.out.println("*************");
-			System.out.println("*************");
-		} else {
-			frequencyfile.createNewFile();
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			in1.close();
+			in2.close();
 		}
-		myObj = new Scanner(System.in);
-
-		Map<String, String> citiesCodes = new HashMap<String, String>();
-		citiesCodes.put("windsor", "yqg");
-		citiesCodes.put("toronto", "ytoa");
-		citiesCodes.put("montreal", "yul");
-		citiesCodes.put("vancouver", "yvr");
-
-		System.out.println(
-				"Please choose source and destination from the following: \nWindsor \nToronto \nMontreal \nVancouver ");
-		System.out.println("-----------");
-		System.out.println("Enter name of source");
-		String src = myObj.nextLine();
-
-		while (!src.matches("[a-zA-Z_]+")) {
-			System.out.println("Invalid source");
-			System.out.println("Enter name of source");
-			src = myObj.nextLine();
-		}
-
-		src = src.toLowerCase();
-		String fileword = src + "\n";
-		String source = citiesCodes.get(src);
-		if (source == null) {
-			source = wordCheck(src);
-			fileword = source + "\n";
-			System.out.println(fileword);
-			source = citiesCodes.get(source);
-		}
-
-		Files.write(Paths.get("src/search_frequency.txt"), fileword.getBytes(), StandardOpenOption.APPEND);
-
-		System.out.println("-----------");
-		System.out.println("Enter name of destination");
-
-		String dest = myObj.nextLine();
-		while (!dest.matches("[a-zA-Z_]+")) {
-			System.out.println("Invalid destination");
-			System.out.println("Enter name of destination");
-			dest = myObj.nextLine();
-		}
-
-		dest = dest.toLowerCase();
-		fileword = dest + "\n";
-		String destination = citiesCodes.get(dest);
-
-		if (destination == null) {
-			destination = wordCheck(dest);
-			fileword = destination + "\n";
-			destination = citiesCodes.get(destination);
-		}
-		Files.write(Paths.get("src/search_frequency.txt"), fileword.getBytes(), StandardOpenOption.APPEND);
-
-		System.out.println("-----------");
-		System.out.println("Enter date of departure in the format : yymmdd");
-		String departureDate = myObj.nextLine();
-
-		System.out.println("-----------");
-		System.out.println("Enter number of people travelling");
-		String count = myObj.nextLine();
-
-		String url = "https://www.skyscanner.ca/transport/flights/" + source + "/" + destination + "/" + departureDate
-				+ "/?adultsv2=" + count
-				+ "&cabinclass=economy&children=0&childrenv2=&destinationentityid=27537411&inboundaltsenabled=false&infants=0&originentityid=27536640&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=0";
-
-		List<String> urls = new ArrayList<String>();
-
-		// Crawl URLs
-		urls.add(url);
-		crawlUrls(2, urls, new ArrayList<String>());
-
-		System.out.println("\n\n======================== Features ======================== \n\n"
-				+ "======================== Inverted Index ========================\n\n");
-		List<String> urlNames = new ArrayList<String>();
-		urlNames.add(url);
-
-		for (String links : urlNames) {
-			List<String> ret = InvertedIndex.htmlParse(links);
-			InvertedIndex.constructTrie(links, ret);
-		}
-		System.out.println("\n\n======================== Frequency Count ========================\n\n");
-		String[] strArr = FrequencyCount.parseHtml("./src/resc/Web Pages/Cheap domestic flights from Toronto.txt");
-		FrequencyCount.printWordFrequency(strArr);
-
-		System.out.println("\n\n======================== Page Ranking ========================\n\n");
-		System.out.print("Enter word: ");
-		sc = new Scanner(System.in);
-		String input = sc.nextLine();
-		PageRanking pg = new PageRanking();
-
-		Hashtable<String, Integer> pageRank = pg.matchPattern(input);
-
-		if (pageRank.size() == 0)
-			System.out.println("Not found");
-		else {
-			int totalOccurences = 0;
-			for (int occurences : pageRank.values())
-				totalOccurences += occurences;
-			System.out.println("About " + totalOccurences + " matches ");
-			System.out.println("Matches found in " + pageRank.size() + " web pages.\n");
-			System.out.println("Matches\t Top 10 Pages");
-			Map<String, Integer> sortedByValueDesc = pageRank.entrySet()
-					.stream().limit(10)
-					.sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-			sortedByValueDesc.forEach((key, value) -> System.out.println("  " + value + " -- " + key));
-		}
-
-		System.out.println("\n\n======================== Word Completion ========================\n\n");
-		WordCompletion.run();
 	}
 
 	private static void crawlUrls(int level, List<String> urls, ArrayList<String> visited) throws Exception {
