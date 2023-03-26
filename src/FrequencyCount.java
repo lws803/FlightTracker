@@ -1,4 +1,3 @@
-
 import java.io.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -6,42 +5,36 @@ import java.util.HashMap;
 
 public class FrequencyCount {
 
-	// main method
+	// **main method**
 	// public static void main(String[] args) {
 	// String[] strArr = htmlParse();
 	// hashTable(strArr);
 	// }
 
-	// creating separate method to parse from HTML
+	// developing a unique HTML parsing method to extract text
 
-	static String[] htmlParse(String file_Name) {
+	static String[] parseHtml(String fileName) {
 
-		// fetching document
-		String fileName = file_Name;
-
-		// String fileName =
-		// "/Users/yashsodhi/Desktop/Java-Practice/W3C-Web-Pages/Data-W3C.htm";
-
-		Document doc;
-
-		// adding try block to check for exceptions
+		int x;
+		// implementing exception handling through try-catch block
 		try {
-			doc = Jsoup.parse(new File(fileName), "utf-8");
-			String body = doc.body().text();
+			Document docFile = Jsoup.parse(new File(fileName), "utf-8");
+			// accessing text from its body
+			String bodyObj = docFile.body().text();
 
-			// adding words in an array
-			String[] str = body.split("\\s+");
-			for (int i = 0; i < str.length; i++) {
-				// deleting non alphanumeric characters
-				str[i] = str[i].replaceAll("[^\\w]", "");
+			// inserting strings/words in the array based on whitespace
+			String[] word = bodyObj.split("\\s+");
+			for ( x = 0; x < word.length; x++) {
+				// removing any non-alphanumeric characters
+				word[x] = word[x].replaceAll("[^\\w]", "");
 			}
 
-			// System.out.println("Length of string is: "+ str.length);
+			// System.out.println("The string's length is: "+ word.length);
 
-			return str;
+			return word;
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// catch block implementation
 			e.printStackTrace();
 		}
 
@@ -49,31 +42,32 @@ public class FrequencyCount {
 
 	}
 
-	// inserting words in hash table
+	// defining a method for counting the frequency of words using HashMap
 
-	static void hashTable(String[] s) {
-		// initiating
-		HashMap<String, Integer> frequency = new HashMap<String, Integer>();
-		// counting word frequency
-		for (int i = 0; i < s.length; i++) {
-			if (s[i].equals("")) {
+	static void printWordFrequency(String[] wordList) {
+		// Initializing HashMap for frequency
+		HashMap<String, Integer> frequencyObj = new HashMap<String, Integer>();
+		int x;
+		// counting frequency of the word
+		for (x = 0; x < wordList.length; x++) {
+			if (wordList[x].equals("")) {
 				continue;
 			}
-			if (frequency.get(s[i].toLowerCase()) != null) {
+			if (frequencyObj.get(wordList[x].toLowerCase()) != null) {
 
-				int n = frequency.get(s[i].toLowerCase());
-				frequency.put(s[i].toLowerCase(), n + 1);
+				int count = frequencyObj.get(wordList[x].toLowerCase());
+				frequencyObj.put(wordList[x].toLowerCase(), count + 1);
 			} else {
-				frequency.put(s[i].toLowerCase(), 1);
+				frequencyObj.put(wordList[x].toLowerCase(), 1);
 			}
 		}
-		System.out.println("Words and their frequency are as follows");
-		// printing key and value pair
-		for (String hash : frequency.keySet()) {
+		System.out.println("Words with their corresponding frequency are given below:");
+		// printing key and value pair as word with their frequency
+		for (String hash : frequencyObj.keySet()) {
 
-			String key = hash.toString();
-			String value = frequency.get(hash).toString();
-			System.out.println("[" + key + " : " + value + "]");
+			String word = hash.toString();
+			String frequency = frequencyObj.get(hash).toString();
+			System.out.println("[" + word + " : " + frequency + "]");
 		}
 	}
 }

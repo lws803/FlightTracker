@@ -179,8 +179,8 @@ public class Project {
 							case 2:
 								System.out.println("\n\n======================== Frequency Count ========================\n\n");
 								String[] strArr = FrequencyCount
-										.htmlParse("./src/resc/Web Pages/Cheap domestic flights from Toronto.txt");
-								FrequencyCount.hashTable(strArr);
+										.parseHtml("./src/resc/Web Pages/Cheap domestic flights from Toronto.txt");
+								FrequencyCount.printWordFrequency(strArr);
 								break;
 							case 3:
 								System.out.println("\n\n======================== Page Ranking ========================\n\n");
