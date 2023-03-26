@@ -163,10 +163,7 @@ public class Project {
 							case 1:
 								System.out.println("\n\n======================== Inverted Index ========================\n\n");
 
-								File folder = new File("src/resc/Web Pages/");
-								File[] listOfFiles = folder.listFiles();
-
-								for (File file : listOfFiles) {
+								for (File file : new File("src/resc/Web Pages/").listFiles()) {
 									if (file.isFile() && file.getName().endsWith(".txt")) {
 										String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
 										if (content != null) {
@@ -178,9 +175,18 @@ public class Project {
 								break;
 							case 2:
 								System.out.println("\n\n======================== Frequency Count ========================\n\n");
-								String[] strArr = FrequencyCount
-										.parseHtml("./src/resc/Web Pages/Cheap domestic flights from Toronto.txt");
-								FrequencyCount.printWordFrequency(strArr);
+
+								for (File file : new File("src/resc/Web Pages/").listFiles()) {
+									if (file.isFile() && file.getName().endsWith(".txt")) {
+										String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
+										if (content != null) {
+											System.out.println(file.getName());
+											String[] strArr = FrequencyCount
+													.parseContent(content);
+											FrequencyCount.printWordFrequency(strArr);
+										}
+									}
+								}
 								break;
 							case 3:
 								System.out.println("\n\n======================== Page Ranking ========================\n\n");
