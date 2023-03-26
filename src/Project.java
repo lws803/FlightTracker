@@ -181,7 +181,7 @@ public class Project {
 			sortedByValueDesc.forEach((key, value) -> System.out.println("  " + value + " -- " + key));
 		}
 
-		System.out.println("Word Completion:");
+		System.out.println("\n\n======================== Word Completion ========================\n\n");
 		WordCompletion.run();
 	}
 
