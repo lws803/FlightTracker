@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,7 +33,13 @@ public class Project {
 	private static Scanner myObj;
 	private static Scanner sc;
 
+	private static WebDriver webDriver;
+
 	public static void main(String[] args) throws Exception {
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--remote-allow-origins=*");
+		webDriver = new ChromeDriver(options);
+
 		// Start data collection
 		File frequencyfile = new File("./src/search_frequency.txt");
 		if (frequencyfile.exists()) {
@@ -132,20 +139,10 @@ public class Project {
 				+ "&adultsv2=1&cabinclass=economy&children=0&childrenv2=&destinationentityid=27537411&inboundaltsenabled=false&infants=0&originentityid=27536640&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=0";
 
 		List<String> urls = new ArrayList<String>();
+
+		// Crawl URLs
 		urls.add(url);
 		crawlUrls(2, urls, new ArrayList<String>());
-		Document document = Jsoup.connect(url).get();
-		document.text();
-
-		String[] title = document.title().split("\\|");
-		String newTitle = "";
-		for (String s : title) {
-			newTitle = newTitle + "" + s;
-		}
-		BufferedWriter writer = new BufferedWriter(new FileWriter("./src/resc/Web Pages/" + newTitle + ".txt"));
-		writer.write(document.text().toLowerCase());
-		writer.close();
-		// End data collection
 
 		System.out.println("\n\n======================== Features ======================== \n\n"
 				+ "======================== Inverted Index ========================\n\n");
@@ -189,37 +186,51 @@ public class Project {
 	}
 
 	private static void crawlUrls(int level, List<String> urls, ArrayList<String> visited) throws Exception {
+
 		// TODO Auto-generated method stub
 		for (String url : urls) {
 			crawl(level, url, visited);
 		}
-
+		webDriver.quit();
 	}
 
-	private static void crawl(int level, String next_link2, ArrayList<String> visited) throws Exception {
+	private static void crawl(int level, String targetLink, ArrayList<String> visited)
+			throws Exception {
 
-		System.out.println(next_link2);
+		System.out.println(targetLink);
 		if (level <= 3) {
-			Document doc = request(next_link2, visited);
+			Document doc = request(targetLink, visited);
+
+			if (doc != null && doc.title() != "") {
+				// We write the doc to folder if it is non-null
+				System.out.println("Scanning... " + doc.title());
+				BufferedWriter writer = new BufferedWriter(
+						new FileWriter("./src/resc/Web Pages/" + doc.title() + ".txt"));
+				writer.write(doc.text().toLowerCase());
+				writer.close();
+			}
 
 			if (doc != null) {
 				for (Element link : doc.select("a[href]")) {
-					String next_link = link.absUrl("href");
-					if (visited.contains(next_link) == false) {
-						crawl(level++, next_link, visited);
+					String nextLink = link.attr("href");
+
+					String regex = "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$";
+					Pattern pattern = Pattern.compile(regex);
+
+					if (pattern.matcher(nextLink).matches() && visited.contains(nextLink) == false) {
+						crawl(level++, nextLink, visited);
 					}
 				}
 			}
 		}
-
 	}
 
-	private static Document request(String next_link2, ArrayList<String> v) throws Exception {
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--remote-allow-origins=*");
-
-		WebDriver webDriver = new ChromeDriver(options);
-		webDriver.get(next_link2);
+	private static Document request(String targetLink, ArrayList<String> v) throws Exception {
+		try {
+			webDriver.get(targetLink);
+		} catch (Exception exception) {
+			return null;
+		}
 
 		String[] ss = null;
 		List<Integer> priceList = new ArrayList<Integer>();
@@ -249,7 +260,15 @@ public class Project {
 			}
 			attempts++;
 		}
-		return null;
+
+		WebElement element = webDriver.findElement(By.tagName("body"));
+		// Get the HTML content of the web element
+		String htmlContent = element.getAttribute("innerHTML");
+		// Convert the HTML content to a JSoup document
+		Document document = Jsoup
+				.parse("<html><head><title>" + webDriver.getTitle() + "</title></head><body>" + htmlContent + "</body></html>");
+
+		return document;
 	}
 
 	public static int minDistance(String firstWrd, String secondWrd) {
