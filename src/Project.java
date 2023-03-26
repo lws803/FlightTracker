@@ -23,7 +23,6 @@ import org.jsoup.nodes.Element;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-//import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -129,10 +128,6 @@ public class Project {
 		System.out.println("-----------");
 		System.out.println("Enter number of people travelling");
 		String count = myObj.nextLine();
-
-		System.out.println("-----------");
-		System.out.println("Enter class : economy or premium economy");
-		String seatType = myObj.nextLine();
 
 		String url = "https://www.skyscanner.ca/transport/flights/" + source + "/" + destination + "/" + departureDate
 				+ "/?adults=" + count
@@ -361,27 +356,4 @@ public class Project {
 		return word;
 	}
 
-	public static String[] readFile(String filePath) {
-		try {
-			if (new File(filePath).isFile())
-				return Jsoup.parse(new File(filePath), "utf-8").body().text().split("\\s+");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		return null;
-	}
-
-	public static boolean IsNumAlpha(String str) {
-		return str != null && str.matches("^[a-zA-Z0-9]*$");
-	}
-
-	public static void writeFile(String name, String content) throws Exception {
-		File f = new File("./src/" + name + ".txt");
-		if (f.exists())
-			f.delete();
-		f.createNewFile();
-		BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-		bw.write(content);
-		bw.close();
-	}
 }
