@@ -130,8 +130,8 @@ public class Project {
 		String count = myObj.nextLine();
 
 		String url = "https://www.skyscanner.ca/transport/flights/" + source + "/" + destination + "/" + departureDate
-				+ "/?adults=" + count
-				+ "&adultsv2=1&cabinclass=economy&children=0&childrenv2=&destinationentityid=27537411&inboundaltsenabled=false&infants=0&originentityid=27536640&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=0";
+				+ "/?adultsv2=" + count
+				+ "&cabinclass=economy&children=0&childrenv2=&destinationentityid=27537411&inboundaltsenabled=false&infants=0&originentityid=27536640&outboundaltsenabled=false&preferdirects=false&ref=home&rtn=0";
 
 		List<String> urls = new ArrayList<String>();
 
