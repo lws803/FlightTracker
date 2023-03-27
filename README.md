@@ -2,8 +2,8 @@
 
 ## Modules
 
-- Data collection / web crawler - Sumukh
-- Inverted index - Darsh
-- Frequency count - Raja
-- Page ranking - Vishal
-- Word completion, search frequency - Wilson
+- Web crawler, Menu - Sumukh
+- Inverted index, Data collection - Darsh
+- File handling, Frequency count - Raja
+- Page ranking, Regex - Vishal
+- Word completion, Word check, search frequency - Wilson
