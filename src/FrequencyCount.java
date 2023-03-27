@@ -10,6 +10,8 @@ public class FrequencyCount {
 		for (x = 0; x < word.length; x++) {
 			// removing any non-alphanumeric characters
 			word[x] = word[x].replaceAll("[^\\w]", "");
+			// removing any number and alphanumeric words
+			word[x] = word[x].replaceAll("[^[A-Za-z]+$]", "");
 		}
 
 		return word;
@@ -18,7 +20,7 @@ public class FrequencyCount {
 	// defining a method for counting the frequency of words using HashMap
 
 	static void printWordFrequency(String[] wordList) {
-		// Initializing HashMap for frequency
+		// Initializing HashMap for storing word with their frequency
 		HashMap<String, Integer> frequencyObj = new HashMap<String, Integer>();
 		int x;
 		// counting frequency of the word

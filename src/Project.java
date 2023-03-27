@@ -180,7 +180,7 @@ public class Project {
 									if (file.isFile() && file.getName().endsWith(".txt")) {
 										String content = new String(Files.readAllBytes(Paths.get(file.getPath())));
 										if (content != null) {
-											System.out.println(file.getName());
+											System.out.println("\n"+file.getName());
 											String[] strArr = FrequencyCount
 													.parseContent(content);
 											FrequencyCount.printWordFrequency(strArr);
