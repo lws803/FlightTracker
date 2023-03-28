@@ -33,7 +33,7 @@ public class WordCompletion {
     System.out.print("Enter a word: ");
     String word = scanner.nextLine();
     if (trie.contains(word)) {
-      StdOut.println("");
+      StdOut.println(word);
     } else {
       StdOut.println("Related Words");
       for (String s : trie.keysWithPrefix(word))
